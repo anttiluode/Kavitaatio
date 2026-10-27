@@ -9,14 +9,14 @@ The question: **Can an elliptical reflecting cavity retain information as change
 
 **Short finding:** The single-wall response is not enough to predict multiple written wall bits. Real, measurable interactions between changed wall patches repair some of the failure. At the original observation deadline, wall combinations have a relatively low useful interaction order. Wait longer, and an interaction involving six separate wall changes becomes clearly measurable.
 
-Scripts: [wall_interactions.py](wall_interactions.py), [causal_cutoff.py](causal_cutoff.py), [test_wall_interactions.py](test_wall_interactions.py). The existing \`experiment.py\` now accepts an optional \`stiffness\` argument; its default 0.28 gives identical behavior to the earlier commit.
+Scripts: [wall_interactions.py](wall_interactions.py), [causal_cutoff.py](causal_cutoff.py), [test_wall_interactions.py](test_wall_interactions.py). The existing `experiment.py` now accepts an optional `stiffness` argument; its default 0.28 gives identical behavior to the earlier commit.
 
 ### Experimental controls
 
 - Eight permanent Robin wall parameters, all written **before** any wave excitation. No learned wall plasticity.
 - Same 96 × 96 Neumann/Robin ellipse and signed 100-sample trace at the second focus. One, two or three distinct physical ping positions can be used.
-- Define the signed two-wall mixed response \`I_AB = y_AB - y_A - y_B + y_empty\`. This is **non-additivity with respect to the wall/material setting**. It is NOT the ordinary quadratic optical-intensity cross term.
-- Degree-\`d\` prediction is the Boolean Möbius expansion using **only** the wall configurations containing at most \`d\` active patches. The unseen configurations containing \`d+1\` or more bits are never used for calibration.
+- Define the signed two-wall mixed response `I_AB = y_AB - y_A - y_B + y_empty`. This is **non-additivity with respect to the wall/material setting**. It is NOT the ordinary quadratic optical-intensity cross term.
+- Degree-`d` prediction is the Boolean Möbius expansion using **only** the wall configurations containing at most `d` active patches. The unseen configurations containing `d+1` or more bits are never used for calibration.
 - A separate 256-state forward-model enumeration is used only to provide ground truth for scoring and to analyze interaction coefficients. This is a diagnostic luxury, **not** a proposed 256-shot learning algorithm. The tests check that changing held-out responses cannot change the fitted model.
 - Noisy testing uses independent Gaussian detector noise with the same **absolute standard deviation ~0.02549** at both wall stiffnesses. This equals 4% of the median single-patch waveform RMS for the 0.28-stiffness reference. Ten noisy repeats per held-out memory, with deterministic seeds; three physical pings per test memory in the headline numbers.
 
@@ -33,7 +33,7 @@ At 0.28 stiffness, the direct two-wall interaction RMS was **0.475** times the s
 
 ### A separate time-horizon experiment
 
-Using all 64 subsets of wall sectors \`(0,2,3,4,6,7)\`, \`causal_cutoff.py\` calculates a signed **sixth-order** mixed material response from a **1,000-step** record of a single source (index 0). This is an explicit expensive inclusion–exclusion control, not efficient recovery.
+Using all 64 subsets of wall sectors `(0,2,3,4,6,7)`, `causal_cutoff.py` calculates a signed **sixth-order** mixed material response from a **1,000-step** record of a single source (index 0). This is an explicit expensive inclusion–exclusion control, not efficient recovery.
 
 | Time steps | Six-wall RMS, spring 0.28 | Six-wall RMS, spring 0.07 |
 | --- | ---: | ---: |
@@ -43,7 +43,7 @@ Using all 64 subsets of wall sectors \`(0,2,3,4,6,7)\`, \`causal_cutoff.py\` cal
 | 500–700 | 1.1152 | 0.2206 |
 | 700–1000 | 3.0259 | 2.3970 |
 
-For 0.28 the first \`|I_6(t)| > 1e-8\` is at step **390**. For 0.07 it is at step **412**. These are **threshold-dependent numerical onsets for one geometry and one six-patch subset**, not a universal wave-speed theorem or a mathematical proof of exact zeros. The higher-order interaction only becomes visible after a longer propagation window. *Listening time is part of the observable computational complexity.*
+For 0.28 the first `|I_6(t)| > 1e-8` is at step **390**. For 0.07 it is at step **412**. These are **threshold-dependent numerical onsets for one geometry and one six-patch subset**, not a universal wave-speed theorem or a mathematical proof of exact zeros. The higher-order interaction only becomes visible after a longer propagation window. *Listening time is part of the observable computational complexity.*
 
 The simulator is still a linear damped wave equation for each **fixed** wall; the dependence on the changed wall coefficients is nonlinear through repeated propagation. This connects conceptually to the ordered perturbed propagator in [CausalHorizon](https://github.com/anttiluode/CausalHorizon/blob/main/THEOREM.md). Here we directly measured finite differences of **persistent material parameters**, not the time-event resolvent or a Cook–Mertz register-reset protocol.
 
@@ -51,7 +51,7 @@ The simulator is still a linear damped wave equation for each **fixed** wall; th
 
 ### Reproduce
 
-\`\`\`bash
+```bash
 python -m pip install numpy
 python -m unittest -v test_wall_interactions
 python wall_interactions.py
@@ -60,9 +60,9 @@ python causal_cutoff.py --stiffness .07 --source 0
 # Optional figures:
 python -m pip install matplotlib
 python plot_interactions.py
-\`\`\`
+```
 
-\`wall_interactions.py\` first generates and caches full truth tables in \`oracle_wall_responses_*.npz\` (768 source/wall simulations per stiffness) so all 256 states are scored without leakage. The summary \`wall_interaction_receipt.json\` and time-horizon files are written locally. The simulations are deterministic, and the cache files are deliberately not versioned.
+`wall_interactions.py` first generates and caches full truth tables in `oracle_wall_responses_*.npz` (768 source/wall simulations per stiffness) so all 256 states are scored without leakage. The summary `wall_interaction_receipt.json` and time-horizon files are written locally. The simulations are deterministic, and the cache files are deliberately not versioned.
 
 ## Two pieces of physics that must not be conflated
 
