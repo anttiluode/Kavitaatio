@@ -6,3 +6,10 @@ wall_interaction_receipt.json
 six_wall_horizon_*.json
 six_wall_horizon.png
 degree_vs_recovery.png
+
+__pycache__/
+*.pyc
+k16_study_receipt.json
+k16_geometry_horizon.png
+k16_degree_amplitude.png
+k16_speed_control.png
