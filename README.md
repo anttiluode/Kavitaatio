@@ -1,5 +1,12 @@
 # Kavitaatio — an etched-wall focus and interrogation laboratory
 
+## October 27: K=16 breaks the naive fixed-degree extrapolation
+
+**[Read the K16 causal-scaling study](K16_FINDINGS.md).** Claude's observation that wall-interaction onset follows physical path length is supported by a new, independent wave-speed control. However, splitting the same eight wall arcs into sixteen creates seventh- and eighth-order interactions *before the original 345-step deadline*. An exact degree-four calibration is therefore not guaranteed at K=16; its cost advantage depends on how patch geometry affects the maximum observable interaction order. The tests measure mixed wall responses and travel-time lower bounds, **not** full sixteen-bit decoding or an application of OpenAI's free-wave smoothing theorem.
+
+Run: `python -m pip install numpy numba`, then `python -m unittest -v test_k16_horizon` and `python k16_study.py`. For optional plots: `python -m pip install matplotlib`, then `python plot_k16_study.py`.
+
+
 Research spike, 27 October 2026. This repository is a controlled numerical experiment, **not a proof of Sogge's conjecture**, a physical-neuron demonstration, or a practical SAT/Williams implementation.
 
 The question: **Can an elliptical reflecting cavity retain information as changes in its wall and reveal those changes through coherent, deliberately chosen pings?** And, separately, **does the exact complex-ray directional multiplier appearing in the new OpenAI local-smoothing manuscript help read that information better than ordinary directional filters?**
