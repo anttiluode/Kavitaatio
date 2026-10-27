@@ -53,12 +53,12 @@ def wall_counts(inside, sector):
     return counts
 
 
-def simulate(bits, source_index, setup=None):
+def simulate(bits, source_index, setup=None, stiffness=0.28):
     inside, sector, srcs, recv = geometry() if setup is None else setup
     y, x = np.mgrid[:N, :N]
     counts = wall_counts(inside, sector)
     # Robin compliance is a fixed material parameter: it persists after waves die.
-    robin_faces = np.einsum('k,kij->ij', np.asarray(bits, float) * 0.28, counts)
+    robin_faces = np.einsum('k,kij->ij', np.asarray(bits, float) * stiffness, counts)
     u = np.zeros((N, N)); prev = np.zeros_like(u)
     sy, sx = srcs[source_index]
     pulse = np.exp(-((x-sx)**2 + (y-sy)**2) / (2 * 1.55**2)) * inside

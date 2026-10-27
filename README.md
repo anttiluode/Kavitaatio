@@ -4,6 +4,66 @@ Research spike, 27 October 2026. This repository is a controlled numerical exper
 
 The question: **Can an elliptical reflecting cavity retain information as changes in its wall and reveal those changes through coherent, deliberately chosen pings?** And, separately, **does the exact complex-ray directional multiplier appearing in the new OpenAI local-smoothing manuscript help read that information better than ordinary directional filters?**
 
+
+## October 27 follow-up — wall interaction order and a causal listening horizon
+
+**Short finding:** The single-wall response is not enough to predict multiple written wall bits. Real, measurable interactions between changed wall patches repair some of the failure. At the original observation deadline, wall combinations have a relatively low useful interaction order. Wait longer, and an interaction involving six separate wall changes becomes clearly measurable.
+
+Scripts: [wall_interactions.py](wall_interactions.py), [causal_cutoff.py](causal_cutoff.py), [test_wall_interactions.py](test_wall_interactions.py). The existing `experiment.py` now accepts an optional `stiffness` argument; its default 0.28 gives identical behavior to the earlier commit.
+
+### Experimental controls
+
+- Eight permanent Robin wall parameters, all written **before** any wave excitation. No learned wall plasticity.
+- Same 96 × 96 Neumann/Robin ellipse and signed 100-sample trace at the second focus. One, two or three distinct physical ping positions can be used.
+- Define the signed two-wall mixed response `I_AB = y_AB - y_A - y_B + y_empty`. This is **non-additivity with respect to the wall/material setting**. It is NOT the ordinary quadratic optical-intensity cross term.
+- Degree-`d` prediction is the Boolean Möbius expansion using **only** the wall configurations containing at most `d` active patches. The unseen configurations containing `d+1` or more bits are never used for calibration.
+- A separate 256-state forward-model enumeration is used only to provide ground truth for scoring and to analyze interaction coefficients. This is a diagnostic luxury, **not** a proposed 256-shot learning algorithm. The tests check that changing held-out responses cannot change the fitted model.
+- Noisy testing uses independent Gaussian detector noise with the same **absolute standard deviation ~0.02549** at both wall stiffnesses. This equals 4% of the median single-patch waveform RMS for the 0.28-stiffness reference. Ten noisy repeats per held-out memory, with deterministic seeds; three physical pings per test memory in the headline numbers.
+
+| Maximum material interaction order fitted | Physical calibration states / source | Truly unseen memories | Original 0.28 wall, 3 pings, noisy | Weaker 0.07 wall, 3 pings, noisy |
+| --- | ---: | ---: | ---: | ---: |
+| 1 (individual walls) | 9 | 247 | 2.87% | 4.86% |
+| 2 (wall pairs) | 37 | 219 | 32.92% | 54.79% |
+| 3 (triples included) | 93 | 163 | **85.89%** | **100%** |
+| 4 (quadruples included) | 163 | 93 | **100%** | **100%** |
+
+**Caution:** each row has a different unseen test set. For a common **93-memories-with-five-or-more-bits** holdout (three pings, noiseless), recovery with orders 1, 2, 3 and 4 respectively was **0/93, 0/93, 70/93, 93/93** at strength 0.28, and **0/93, 10/93, 93/93, 93/93** at strength 0.07. The model predicts all 256 candidate words, but only scores wall words outside its own calibration set. Order four calibrates 163 of 256 wall words **per physical source**, a 36% calibration saving, not exponential compression.
+
+At 0.28 stiffness, the direct two-wall interaction RMS was **0.475** times the single-wall response RMS. The degree-2 approximation missed many joint states even though it fit all 37 calibrated states exactly. Higher-order scattering is real.
+
+### A separate time-horizon experiment
+
+Using all 64 subsets of wall sectors `(0,2,3,4,6,7)`, `causal_cutoff.py` calculates a signed **sixth-order** mixed material response from a **1,000-step** record of a single source (index 0). This is an explicit expensive inclusion–exclusion control, not efficient recovery.
+
+| Time steps | Six-wall RMS, spring 0.28 | Six-wall RMS, spring 0.07 |
+| --- | ---: | ---: |
+| 0–145 | 0 | 0 |
+| 145–345 | 5.55e-15 | 5.81e-15 |
+| 345–500 | 0.1234 | 0.00178 |
+| 500–700 | 1.1152 | 0.2206 |
+| 700–1000 | 3.0259 | 2.3970 |
+
+For 0.28 the first `|I_6(t)| > 1e-8` is at step **390**. For 0.07 it is at step **412**. These are **threshold-dependent numerical onsets for one geometry and one six-patch subset**, not a universal wave-speed theorem or a mathematical proof of exact zeros. The higher-order interaction only becomes visible after a longer propagation window. *Listening time is part of the observable computational complexity.*
+
+The simulator is still a linear damped wave equation for each **fixed** wall; the dependence on the changed wall coefficients is nonlinear through repeated propagation. This connects conceptually to the ordered perturbed propagator in [CausalHorizon](https://github.com/anttiluode/CausalHorizon/blob/main/THEOREM.md). Here we directly measured finite differences of **persistent material parameters**, not the time-event resolvent or a Cook–Mertz register-reset protocol.
+
+**Scope of new OpenAI wave paper:** The paper's imaginary-ray directional Fourier multiplier was implemented in the previous experiment. Its free-Euclidean-wave local-smoothing theorem does **not** prove these bounded-cavity memory or interaction results. The current follow-up studies *why focusing alone cannot identify wall addresses, and how much causal interaction history a listener needs*. Novel physical effects are demonstrated **within this toy model**; no claim of a new general theorem or physical neural device is made.
+
+### Reproduce
+
+```bash
+python -m pip install numpy
+python -m unittest -v test_wall_interactions
+python wall_interactions.py
+python causal_cutoff.py --stiffness .28 --source 0
+python causal_cutoff.py --stiffness .07 --source 0
+# Optional figures:
+python -m pip install matplotlib
+python plot_interactions.py
+```
+
+`wall_interactions.py` first generates and caches full truth tables in `oracle_wall_responses_*.npz` (768 source/wall simulations per stiffness) so all 256 states are scored without leakage. The summary `wall_interaction_receipt.json` and time-horizon files are written locally. The simulations are deterministic, and the cache files are deliberately not versioned.
+
 ## Two pieces of physics that must not be conflated
 
 - **Remembering wall:** Eight arc sectors modify persistent Robin boundary compliance. Zero compliance gives discrete Neumann reflection. Waves may damp away; the Robin coefficients remain until externally changed. This is an *assumed physical storage variable*, not a learned wall-update rule.
