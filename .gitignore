@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+oracle_wall_responses_*.npz
+six_wall_horizon_*.npz
+wall_interaction_receipt.json
+six_wall_horizon_*.json
+six_wall_horizon.png
+degree_vs_recovery.png
