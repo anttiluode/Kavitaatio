@@ -66,7 +66,7 @@ python experiment.py
 python test_multibit.py
 ~~~
 
-The two scripts use only NumPy and the Python standard library. Output `receipt.json` is generated locally; no claimed results from physical hardware or external data.
+The two experiment scripts use only NumPy and the Python standard library. For the optional figures, install Matplotlib (`python -m pip install -r requirements.txt`) and run `python plot_receipt.py` after `experiment.py`; it writes `wall_geometry.png`, `address_accuracy.png`, and `echo_trace.png`. Output `receipt.json` is generated locally; no claimed results from physical hardware or external data.
 
 ### Next gates (not yet passed)
 
