@@ -28,16 +28,16 @@ wall patches can interact in the same amount of time.
   angular sectors. We use **contiguous low-index sectors** (0,1,...,k-1).
   The K=8 reference uses the original spaced-out subset (0,2,3,4,6,7).
 - The observable is the *signed* kth-order Boolean mixed wall response:
-  \`I_S(t) = sum_(B subset S) (-1)^(|S|-|B|) y_B(t)\`.
+  `I_S(t) = sum_(B subset S) (-1)^(|S|-|B|) y_B(t)`.
   This is nonlinearity in **material configuration**, not nonlinear wave
   dynamics at fixed material state, and not intensity interference.
-- We threshold \`|I_S(t)| > 1e-4\` to report an **operational onset**. Changing
+- We threshold `|I_S(t)| > 1e-4` to report an **operational onset**. Changing
   the threshold changes the onset. Gaussian initial pulses have noncompact
   tails, so we do not claim literal exact zeros at all earlier times.
 
 ## Independently computed geometric deadline
 
-\`waypoint_tour.py\` finds an *optimistic minimum Euclidean path* from the
+`waypoint_tour.py` finds an *optimistic minimum Euclidean path* from the
 source to at least one actual boundary grid cell in every selected sector,
 then to the receiver. It uses dynamic programming over the chosen sectors
 and boundary-cell positions, rather than allowing each pair of sectors to
@@ -93,16 +93,16 @@ algebraic ranks or state-recovery probabilities.
 For a binary K-patch wall, every fixed finite-time response has a unique
 Boolean multilinear expansion. Its coefficient for a subset of patches
 is an inclusion–exclusion mixed difference. In the discrete wave-step
-operator \`A(w)=A0+sum_i w_i Ai\`, each interaction corresponds to ordered
+operator `A(w)=A0+sum_i w_i Ai`, each interaction corresponds to ordered
 insertions along paths that encounter those wall supports.
 
 Finite propagation does limit which combinations can affect a listener by
 a deadline. **But that bound depends on the distribution and size of the
 patches.** Cutting a fixed wall into more pieces can let the same path
 touch more distinct patches. A claim of polynomial calibration
-\`sum_(k<=k*(T,K)) binom(K,k)\` requires *a bound on k*(T,K) independent
+`sum_(k<=k*(T,K)) binom(K,k)` requires *a bound on k*(T,K) independent
 of K* (or a stronger structural sparsity restriction). This experiment
-falsifies the straightforward extrapolation \`k*=4 at K=16\` for the
+falsifies the straightforward extrapolation `k*=4 at K=16` for the
 original physical geometry.
 
 This result is about causal paths and multiple scattering in a toy
@@ -121,9 +121,9 @@ python -m unittest -v test_k16_horizon
 python k16_study.py
 ~~~
 
-\`k16_study.py\` writes \`k16_study_receipt.json\`. It uses at most
-\`2^9=512\` wall configurations for any tested high-order coefficient,
-not \`2^16=65536\`. It doesn't fit a multi-bit decoder and it doesn't
+`k16_study.py` writes `k16_study_receipt.json`. It uses at most
+`2^9=512` wall configurations for any tested high-order coefficient,
+not `2^16=65536`. It doesn't fit a multi-bit decoder and it doesn't
 learn wall coefficients. For plots (optional), install Matplotlib.
 
 ## Next falsification gates
